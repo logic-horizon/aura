@@ -1,0 +1,78 @@
+---
+description: Backend simplicity — inspect first; few files/lines; modify/remove/consolidate before add. Apply before any TypeScript.
+globs: "**/*.ts"
+alwaysApply: true
+---
+
+# Backend Code Generation — Simplicity & Clarity
+
+**HARD GATE:** Before creating or editing any `*.ts` file, apply this rule. Do not write TypeScript until you have inspected the relevant path and chosen modify / remove / consolidate / add.
+
+**Build the simplest system that correctly satisfies the current requirement.** Adding code is not the default. Prefer modify → remove → consolidate → add (only if genuinely missing).
+
+Prefer: simple over clever · direct over indirect · local over global · explicit over abstract · existing over new · one path over many · small over large.
+
+As simple as possible, **no simpler than correctness allows.**
+
+## Workflow (every change)
+
+```text
+Inspect → Trace → Diagnose → Search → Decide (modify|remove|consolidate|add)
+  → Implement smallest complete change → Consolidate obsolete paths → Verify boundaries → Stop
+```
+
+Trace: entry → execution path → owner → data in/out → root cause. Fix the source, not the nearest symptom. Do not invent from the open file alone.
+
+## One authoritative path
+
+Important behavior has one clear path (e.g. validate → authorize → domain → persist → result). No `process` / `processV2` / `safeProcess` / hidden duplicates. When replacing: update callers, then **intentionally keep or remove** the old path — replacement is incomplete if both can disagree.
+
+Search before creating utilities, retries, caches, validation, logging, auth, tool execution. Extend the canonical mechanism; do not invent a parallel one.
+
+## Ownership & locality
+
+One owner, clear contract, others use it — do not duplicate truth across modules. Keep feature logic near its domain; do not dump into global `lib`/`utils`/`helpers` until multiple domains proven to need it. Keep dependency direction: API → feature → domain → infrastructure (no spiderwebs / wrong-way imports).
+
+Split or merge modules by responsibility (“what does this own?”), not to maximize or minimize file count.
+
+## Complexity must earn existence
+
+Before abstraction, registry, factory, middleware, queue, cache, dependency: What fails without it today? Simpler existing option? Present requirement or imagined future? **Necessary complexity is allowed; unjustified complexity is not.** First use → direct; repeated stable pattern → maybe share.
+
+## Bugs, invariants, fallbacks
+
+Correct the cause; prefer reducing complexity. Fix general bugs at the true boundary (tool contract, validation), not a special case per tool. Fallbacks only when failure is expected and correctness is preserved — never silent default chains that hide real errors.
+
+## Data, validation, work placement
+
+Understand producers/consumers before changing shapes. Validate at trust boundaries (API, webhooks, tool args, jobs, providers); keep internal logic on a clear contract. Move work off the request path only when the user need not wait — do not invent queues for imagined cost. Fetch/process only what is needed; measure before optimizing. Cache only with clear ownership + invalidation.
+
+## Errors, agents, streaming
+
+Errors should get clearer across boundaries, not vanish. Tools: input → validate → execute → structured result (input, output, side effects, failure, permissions/cost if relevant). Extend the existing tool contract; do not spawn a framework per tool. Trace agent paths before adding instructions/middleware/retries. Streams: one producer/consumer contract; events communicate state, do not compete with persistence.
+
+## Dependencies & cleanup
+
+Prefer platform/existing solutions; packages only when they remove real complexity. Verify requested behavior and boundaries (old path dead? callers? contracts?). Clean up dead/duplicate code proportional to the change; no unrelated rewrite.
+
+## Codebase size & file discipline
+
+**Codebase size is a cost.** Every file and line must be understood later. Prefer the smallest clear implementation; do not expand a small requirement into a framework.
+
+**New file only when needed:** distinct responsibility, real reuse, clearer architecture, or the existing file would become harder to understand. Do not create files because a function *could* be separate, the file grew slightly, a framework suggests it, or reuse is hypothetical. Prefer `tool/weather.ts` over types/constants/helpers/service/factory/executor for a simple tool.
+
+**Reuse existing files** when they already own the behavior and stay understandable. A few more lines in the right file beat another file. **But do not create giant files** — split when unrelated responsibilities, independent domains, or different ownership make the file hard to navigate. Split by responsibility, not arbitrary size or “one concept per file” purity. Related schema/validation/small helpers can stay together; don’t make `constants.ts` for three local constants.
+
+**Functions:** extract for reuse, isolation, clearer responsibility, testing, or real cognitive relief — not mechanical `validate`/`prepare`/`normalize`/`process`/`format` fragmentation.
+
+**Avoid boilerplate:** pass-through wrappers, empty classes, meaningless interfaces/aliases, re-export-only files, config objects that add no boundary.
+
+**Proportional growth:** architecture matches current domain complexity (one file → a few → folders only when earned). Unexpected large diffs → stop and ask why; consolidate if you invented future requirements or parallel infrastructure.
+
+**Final size check:** as few files and lines as reasonably possible while preserving correctness, clarity, testability, and meaningful separation. If it fits cleanly in one file, don’t make five; if it needs five, don’t force one.
+
+## Prefer
+
+Modify existing · fix root cause · one path · one source of truth · existing mechanisms · local ownership · explicit contracts · remove obsolete · measured optimization · necessary complexity only · few meaningful files.
+
+**Before adding anything:** should this be added, or should something that already exists be changed, removed, or consolidated?

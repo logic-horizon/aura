@@ -1,0 +1,32 @@
+{
+  "name": "aura",
+  "version": "0.1.0",
+  "description": "Taste memory CLI and self-hosted server. Train markdown, store locally or on an Aura cloud, serve it over MCP.",
+  "bin": {
+    "aura": "./cli/index.ts"
+  },
+  "files": [
+    "cli",
+    "lib",
+    "server",
+    "drizzle.config.ts"
+  ],
+  "scripts": {
+    "aura": "bun run cli/index.ts",
+    "server": "bun run server/index.ts",
+    "db:push": "bun x drizzle-kit push"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.5",
+    "hono": "^4.13.8"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "drizzle-kit": "^0.31.4",
+    "typescript": "^5"
+  },
+  "packageManager": "bun@1.4.2",
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}

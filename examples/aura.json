@@ -1,0 +1,6 @@
+{
+  "name": "personal",
+  "paths": ["**/*.md"],
+  "remote": "",
+  "exclude": [".git", "node_modules", ".aura"]
+}
