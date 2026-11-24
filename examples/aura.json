@@ -1,6 +1,12 @@
 {
   "name": "personal",
-  "paths": ["**/*.md"],
+  "paths": ["**/*.md", "**/*.pdf", "**/*.{png,jpg,jpeg,webp}"],
   "remote": "",
-  "exclude": [".git", "node_modules", ".aura"]
+  "exclude": [".git", "node_modules", ".aura"],
+  "keys": { "openrouter": "" },
+  "models": {
+    "llm": "openai/gpt-4o-mini",
+    "vlm": "openai/gpt-4o-mini",
+    "embedding": "openai/text-embedding-3-small"
+  }
 }

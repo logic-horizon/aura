@@ -1,9 +1,9 @@
 import type { Config } from "drizzle-kit";
 
 export default {
-  schema: "./lib/db/schema.ts",
-  dialect: "postgresql",
+  schema: "./vector/schema.ts",
+  dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "",
+    url: "./.aura/aura.sqlite",
   },
 } satisfies Config;
